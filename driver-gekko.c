@@ -59,9 +59,9 @@ void dumpbuffer(struct cgpu_info *compac, int LOG_LEVEL, char *note, unsigned ch
 			*pout++ = hex[(*ptr>>4)&0xF];
 			*pout++ = hex[(*ptr++)&0xF];
 			if (i % 42 == 41) {
-				*pout = 0;
-				pout = str;
-				applog(LOG_LEVEL, "%i: %s %s: %s", compac->cgminer_id, compac->drv->name, note, str);
+				// *pout = 0;
+				// pout = str;
+				// applog(LOG_LEVEL, "%i: %s %s: %s", compac->cgminer_id, compac->drv->name, note, str);
 			} else {
 				*pout++ = ':';
 			}
@@ -609,7 +609,7 @@ static void compac_send_chain_inactive(struct cgpu_info *compac)
 	struct COMPAC_INFO *info = compac->device_data;
 	unsigned int i;
 
-	applog(LOG_INFO,"%d: %s %d - sending chain inactive for %d chip(s)",
+	applog(LOG_INFO,"%d: %s %d - YO, sending chain inactive for %d chip(s)",
 		compac->cgminer_id, compac->drv->name, compac->device_id, info->chips);
 
 	if (info->asic_type == BM1397)
@@ -2048,7 +2048,7 @@ static void *compac_mine(void *object)
 		}
 
 		err = usb_write(compac, (char *)info->task, task_len, &sent_bytes, C_SENDWORK);
-		//dumpbuffer(compac, LOG_WARNING, "TASK.TX", info->task, task_len);
+		dumpbuffer(compac, LOG_INFO, "TASK.TX", info->task, task_len);
 		if (err != LIBUSB_SUCCESS)
 		{
 			applog(LOG_WARNING,"%d: %s %d - usb failure (%d)", compac->cgminer_id, compac->drv->name, compac->device_id, err);
@@ -2577,20 +2577,20 @@ static void *compac_mine2(void *object)
 		}
 
 #if 0
-applog(LOG_ERR, "%s() %d: %s %d - Task [%02x] len %3u", __func__,
+applog(LOG_INFO, "%s() %d: %s %d - Task [%02x] len %3u", __func__,
 	compac->cgminer_id, compac->drv->name, compac->device_id, jid, task_len);
-applog(LOG_ERR, " [%02x %02x %02x %02x %02x %02x %02x %02x]",
+applog(LOG_INFO, " [%02x %02x %02x %02x %02x %02x %02x %02x]",
 	info->task[0], info->task[1], info->task[2], info->task[3], info->task[4], info->task[5], info->task[6], info->task[7]);
-applog(LOG_ERR, " [%02x %02x %02x %02x %02x %02x %02x %02x]",
+applog(LOG_INFO, " [%02x %02x %02x %02x %02x %02x %02x %02x]",
 	info->task[8], info->task[9], info->task[10], info->task[11], info->task[12], info->task[13], info->task[14], info->task[15]);
-applog(LOG_ERR, " [%02x %02x %02x %02x %02x %02x %02x %02x]",
+applog(LOG_INFO, " [%02x %02x %02x %02x %02x %02x %02x %02x]",
 	info->task[16], info->task[17], info->task[18], info->task[19], info->task[20], info->task[21], info->task[22], info->task[23]);
-applog(LOG_ERR, " [%02x %02x %02x %02x %02x %02x %02x %02x]",
+applog(LOG_INFO, " [%02x %02x %02x %02x %02x %02x %02x %02x]",
 	info->task[24], info->task[25], info->task[26], info->task[27], info->task[28], info->task[29], info->task[30], info->task[31]);
-#endif
 
+#endif
 		err = usb_write(compac, (char *)info->task, task_len, &sent_bytes, C_SENDWORK);
-		//dumpbuffer(compac, LOG_WARNING, "TASK.TX", info->task, task_len);
+		dumpbuffer(compac, LOG_INFO, "TASK.TX2", info->task, task_len);
 		if (err != LIBUSB_SUCCESS)
 		{
 			applog(LOG_WARNING,"%d: %s %d - usb failure (%d)", compac->cgminer_id, compac->drv->name, compac->device_id, err);

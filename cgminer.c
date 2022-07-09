@@ -347,7 +347,7 @@ char *opt_bitmine_a1_options = NULL;
 #include "dragonmint_t1.h"
 char *opt_dragonmint_t1_options = NULL;
 int opt_T1Pll[MCOMPAT_CONFIG_MAX_CHAIN_NUM] = {
-	DEFAULT_PLL, DEFAULT_PLL, DEFAULT_PLL, DEFAULT_PLL, 
+	DEFAULT_PLL, DEFAULT_PLL, DEFAULT_PLL, DEFAULT_PLL,
 	DEFAULT_PLL, DEFAULT_PLL, DEFAULT_PLL, DEFAULT_PLL
 };
 int opt_T1Vol[MCOMPAT_CONFIG_MAX_CHAIN_NUM] = {
@@ -568,6 +568,8 @@ struct thread_q *getq;
 
 static uint32_t total_work;
 struct work *staged_work = NULL;
+
+void debug_stratum_work(struct work *work);
 
 struct schedtime {
 	bool enable;
@@ -1914,7 +1916,7 @@ static struct opt_table opt_config_table[] = {
 	OPT_WITH_ARG("--version-file",
 	set_version_path, NULL, opt_hidden,
 	"Set miner version file"),
-	
+
 	OPT_WITHOUT_ARG("--bitmain-fan-ctrl",
 	opt_set_bool, &opt_bitmain_fan_ctrl,
 	"Enable bitmain miner fan controlling"),
@@ -11120,7 +11122,8 @@ begin_bench:
 		if (pool->has_stratum) {
 			if (opt_gen_stratum_work) {
 				gen_stratum_work(pool, work);
-				applog(LOG_DEBUG, "Generated stratum work");
+				debug_stratum_work(work);
+				applog(LOG_INFO, "Generated stratum work");
 				stage_work(work);
 			}
 			continue;
@@ -11155,4 +11158,14 @@ begin_bench:
 	}
 
 	return 0;
+}
+
+void debug_stratum_work(struct work *work) {
+    uint8_t i;
+
+    printf("Stratum debug: ");
+    for (i=0;i<128;i++) {
+        printf("%02X:", work->data[i]);
+    }
+    printf("\n");
 }
