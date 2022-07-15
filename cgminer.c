@@ -7967,20 +7967,26 @@ static void gen_stratum_work(struct pool *pool, struct work *work)
 	work->ntime = strdup(pool->ntime);
 	cg_runlock(&pool->data_lock);
 
-	if (opt_debug) {
+	//if (opt_debug) {
 		char *header, *merkle_hash;
 
 		header = bin2hex(work->data, 112);
 		merkle_hash = bin2hex((const unsigned char *)merkle_root, 32);
-		applog(LOG_DEBUG, "Generated stratum merkle %s", merkle_hash);
-		applog(LOG_DEBUG, "Generated stratum header %s", header);
-		applog(LOG_DEBUG, "Work job_id %s nonce2 %"PRIu64" ntime %s", work->job_id,
+		applog(LOG_INFO, "Generated stratum merkle %s", merkle_hash);
+		applog(LOG_INFO, "Generated stratum header %s", header);
+		applog(LOG_INFO, "Work job_id %s nonce2 %"PRIu64" ntime %s", work->job_id,
 		       work->nonce2, work->ntime);
 		free(header);
 		free(merkle_hash);
-	}
+	//}
 
 	calc_midstate(pool, work);
+	//debug midstate
+	char *midstate;
+    midstate = bin2hex(work->midstate, 33);
+    applog(LOG_INFO, "Generated midstate %s", midstate);
+    free(midstate);
+
 	set_target(work->target, work->sdiff);
 
 	local_work++;
